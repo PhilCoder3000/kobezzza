@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "experimentalDecorators": true,
+    "outDir": "dist",
+    "strict": true,
+    "noImplicitOverride": true,
+    "declaration": true,
+    "module": "ES2020",
+    "moduleResolution": "node",
+  },
+  "include": ["src"],
+  "exclude": ["dist"]
+}
