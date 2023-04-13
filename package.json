@@ -1,8 +1,30 @@
 {
+  "name": "webpack-setup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
   "scripts": {
-    "tsc": "npx tsc"
+    "start": "webpack serve",
+    "develop": "webpack-dev-server --mode development",
+    "build": "webpack --mode=production"
   },
   "devDependencies": {
-    "typescript": "^5.0.3"
+    "@types/fork-ts-checker-webpack-plugin": "^0.4.5",
+    "@types/node": "^18.15.11",
+    "@types/webpack": "^5.28.1",
+    "@types/webpack-dev-server": "^4.7.2",
+    "babel-loader": "^9.1.2",
+    "css-loader": "^6.7.3",
+    "csv-loader": "^3.0.5",
+    "fork-ts-checker-webpack-plugin": "^8.0.0",
+    "html-webpack-plugin": "^5.5.0",
+    "style-loader": "^3.3.2",
+    "ts-loader": "^9.4.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4",
+    "webpack": "^5.79.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.13.2",
+    "xml-loader": "^1.2.1"
   }
 }

@@ -1,14 +1,25 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "experimentalDecorators": true,
-    "outDir": "dist",
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "target": "ESNext",
+    "module": "ESNext",
     "strict": true,
-    "noImplicitOverride": true,
     "declaration": true,
-    "module": "ES2020",
+    "allowJs": false,
+    "experimentalDecorators": true,
+    "noImplicitOverride": true,
     "moduleResolution": "node",
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": ["src"],
-  "exclude": ["dist"]
+  "exclude": ["dist"],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  }
 }

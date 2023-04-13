@@ -17,9 +17,9 @@ class Bit implements BaseBit {
     this.#isValidOperation(arrayIndex, bitIndex);
 
     if (newValue === 1) {
-      this.#array[arrayIndex] = this.#array[arrayIndex] | (0b1 << bitIndex);
+      this.#array[arrayIndex] |= (0b1 << bitIndex);
     } else {
-      this.#array[arrayIndex] = this.#array[arrayIndex] & ~(0b1 << bitIndex);
+      this.#array[arrayIndex] &= ~(0b1 << bitIndex);
     }
   }
 
