@@ -17,10 +17,22 @@ type Argv = {
   a: string;
 };
 
-function getConfig() {
+type Params = {
+  isDev: boolean;
+};
+
+function getConfig(env: Env): Configuration {
+  const params: Params = {
+    isDev: env.mode === 'development',
+  };
+
   return {
     mode: 'development',
-    entry: './src/index.ts',
+    entry: {
+      app: './src/index.ts',
+      hot: 'webpack/hot/dev-server.js',
+      client: 'webpack-dev-server/client/index.js?hot=true&live-reload=true',
+    },
     output: {
       publicPath: '/',
       filename: '[name].[contenthash].js',
@@ -38,7 +50,7 @@ function getConfig() {
   };
 }
 
-function getPlugins() {
+function getPlugins(): webpack.WebpackPluginInstance[] {
   return [
     new HtmlWebpackPlugin({
       publicPath: '/',
@@ -52,10 +64,12 @@ function getPlugins() {
     new ForkTsCheckerWebpackPlugin({
       async: false,
     }),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.ProgressPlugin(),
   ];
 }
 
-function getModules() {
+function getModules(): webpack.ModuleOptions {
   return {
     rules: [
       {
@@ -80,12 +94,16 @@ function getModules() {
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        test: /\.(png|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
         type: 'asset/resource',
+      },
+      {
+        test: /\.svg/,
+        type: 'asset/inline',
       },
       {
         test: /\.(csv|tsv)$/i,
@@ -99,15 +117,19 @@ function getModules() {
   };
 }
 
-function getDevServer() {
+function getDevServer(): WebpackDevServerConfiguration {
   return {
     static: path.join(__dirname, 'dist'),
     open: true,
     port: 3000,
+    hot: true,
+    client: {
+      overlay: true,
+    },
   };
 }
 
-function getOptimization() {
+function getOptimization(): Configuration['optimization'] {
   return {
     runtimeChunk: 'single',
     splitChunks: {
