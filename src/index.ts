@@ -1,12 +1,37 @@
-const h1 = document.createElement('h1');
-h1.textContent = 'Hello World';
+import Router, { Route } from './utils/routing';
+import './homeworks/2-canvas/ImageMaker';
+import './index.css';
+import { renderMain } from './homeworks/1-bitwise';
+import { renderHM2 } from './homeworks/2-canvas/ImageMaker';
 
-document.body.appendChild(h1);
+const body = document.querySelector('body') as HTMLBodyElement;
+const root = document.createElement('div');
+root.id = 'root';
+body.appendChild(root);
 
-const button = document.createElement('button');
-button.onclick = () => {
-  h1.textContent += '11';
-};
-button.innerText = 'add 1'
+const routes: Route[] = [
+  {
+    path: '/',
+    element: renderMain
+  },
+  {
+    path: '/homework-2',
+    element: renderHM2,
+  },
+];
 
-document.body.appendChild(button);
+const router = new Router(routes);
+
+const ul = document.createElement('ul');
+
+router.getPath().forEach((path) => {
+  const li = document.createElement('li');
+  const link = document.createElement('a');
+  li.appendChild(link);
+  link.href = path;
+  link.innerText = path;
+  link.onclick = router.route;
+  ul.appendChild(li);
+});
+
+body.appendChild(ul);

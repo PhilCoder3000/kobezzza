@@ -126,6 +126,7 @@ function getDevServer(): WebpackDevServerConfiguration {
     client: {
       overlay: true,
     },
+    historyApiFallback: true,
   };
 }
 

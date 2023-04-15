@@ -35,3 +35,5 @@ class Bit implements BaseBit {
   }
   }
 }
+
+export default Bit;
