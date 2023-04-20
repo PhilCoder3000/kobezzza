@@ -1,9 +1,11 @@
+type Value = string | number
+
 class Link {
   next: Link | null = null;
   prev: Link | null = null;
-  value: string | null = null;
+  value: Value | null = null;
 
-  constructor(value: string) {
+  constructor(value: Value) {
     this.value = value;
   }
 
@@ -12,7 +14,7 @@ class Link {
   }
 }
 
-class LinkList {
+export class LinkList {
   first: Link | null = null;
   last: Link | null = null;
 
@@ -20,27 +22,29 @@ class LinkList {
     return this.first === null;
   }
 
-  insertFirst(value: string) {
+  insertFirst(value: Value) {
     const newFirst = new Link(value);
-    if (this.first === null) {
+    if (this.first !== null) {
       this.first = newFirst;
       this.last = newFirst;
     } else {
-      newFirst.next = this.first;
-      this.first.prev = newFirst;
       this.first = newFirst;
+      this.last = newFirst;
     }
   }
 
-  insertLast(value: string) {
+  insertLast(value: Value) {
     const newLast = new Link(value);
-    if (this.last) {
+    if (this.last !== null) {
       this.last.next = newLast;
       this.last = newLast;
+    } else {
+      this.last = newLast;
+      this.first = newLast;
     }
   }
 
-  insertAfter(link: string, value: string) {
+  insertAfter(link: string, value: Value) {
     const newLink = new Link(value);
     const element = this.find(link);
     if (element !== -1) {
@@ -68,6 +72,20 @@ class LinkList {
     }
   }
 
+  deleteLast() {
+    if (this.last !== null) {
+      const last = this.last;
+      const prev = last.prev;
+      if (prev) {
+        this.last = prev
+      } else {
+        this.last = null;
+      }
+      return last
+    }
+    throw new Error("Delete error")
+  }
+
   displayList() {
     let current = this.first;
     while (current) {
@@ -76,33 +94,41 @@ class LinkList {
     }
   }
 
-  find(value: string) {
-    let current = this.first;
-    if (current) {
-      while (current?.value !== value) {
-        current = current?.next;
-        if (!current) {
-          return -1;
+  find(arg: Value | Link): Link | -1 {
+    if (arg instanceof Link) {
+      let current = this.first
+      while (current) {
+        if (arg === current) {
+          return current
         }
+        current = current.next
       }
-      return current;
+    } else {
+      let current = this.first;
+      if (current) {
+        while (current?.value !== arg) {
+          current = current?.next;
+          if (!current) {
+            return -1;
+          }
+        }
+        return current;
+      }
     }
     return -1;
   }
 
-  delete(value: string) {
-    const current = this.find(value);
-    if (current !== -1) {
-      const prev = current.prev;
-      const next = current.next;
-      if (prev) {
-        prev.next = next || null;
-      }
-      if (next) {
-        next.prev = prev || null;
-      }
+  delete(link: Link) {
+    const next = link.next;
+    const prev = link.prev;
+    if (prev && next) {
+      next.prev = prev
+      prev.next = next
+    } else if (next) {
+      next.prev = null
+    } else if (prev) {
+      prev.next = null
     }
-    return -1;
   }
 }
 
@@ -165,6 +191,7 @@ class Item {
 
   get() {
     const textDecoder = new TextDecoder(this.format)
+    this.view.getUint16(0); // number
     return textDecoder.decode(this.value);
   }
 }

@@ -16,6 +16,8 @@ export function encode(array: AvailableValue[], schema: Schema) {
 
     if (typeof value === valueType) {
       if (bitCount === 16) {
+        // view.setUint16(currentByte, 'ab')
+        // byteOffset += 2;
       } else {
         if (bitOffset + bitCount >= 2 ** bitCount) {
           view.setInt8(byteOffset, currentByte);
@@ -48,7 +50,7 @@ export function decode(array: ArrayBuffer, schema: Schema): Array<unknown> {
   return [];
 }
 
-class BirArray {
+class BitArray {
   buffer: ArrayBuffer;
   view: DataView;
   bitOffset: number;
