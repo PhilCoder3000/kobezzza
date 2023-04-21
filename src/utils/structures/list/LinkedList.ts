@@ -1,9 +1,9 @@
-type Value = string | number
+type Value = string | number;
 
-class Node {
-  next: Node | null = null;
-  prev: Node | null = null;
-  value: Value | null = null;
+export class Node {
+  next: Nullable<Node> = null;
+  prev: Nullable<Node> = null;
+  value: Nullable<Value> = null;
 
   constructor(value: Value) {
     this.value = value;
@@ -15,8 +15,8 @@ class Node {
 }
 
 export class LinkedList {
-  first: Node | null = null;
-  last: Node | null = null;
+  first: Nullable<Node> = null;
+  last: Nullable<Node> = null;
 
   isEmpty() {
     return this.first === null;
@@ -35,12 +35,12 @@ export class LinkedList {
     const newLast = new Node(value);
     newLast.prev = this.last;
     if (this.last) {
-      this.last.next = newLast
+      this.last.next = newLast;
     }
     this.last = newLast;
     if (this.first === null) {
       this.first = newLast;
-    } 
+    }
   }
 
   insertAfter(link: string, value: Value) {
@@ -74,7 +74,7 @@ export class LinkedList {
     if (this.last !== null) {
       if (this.last.prev) {
         this.last = this.last.prev;
-        this.last.next = null
+        this.last.next = null;
       } else {
         this.last = null;
       }
@@ -91,12 +91,12 @@ export class LinkedList {
 
   find(arg: Value | Node): Node | -1 {
     if (arg instanceof Node) {
-      let current = this.first
+      let current = this.first;
       while (current) {
         if (arg === current) {
-          return current
+          return current;
         }
-        current = current.next
+        current = current.next;
       }
     } else {
       let current = this.first;
@@ -117,29 +117,12 @@ export class LinkedList {
     const next = link.next;
     const prev = link.prev;
     if (prev && next) {
-      next.prev = prev
-      prev.next = next
+      next.prev = prev;
+      prev.next = next;
     } else if (next) {
-      next.prev = null
+      next.prev = null;
     } else if (prev) {
-      prev.next = null
+      prev.next = null;
     }
   }
 }
-
-class ListIterator {
-  list: LinkedList;
-
-  constructor(list: LinkedList) {
-    this.list = list;
-  }
-
-  *[Symbol.iterator]() {
-    let current = this.list.first;
-    while (current) {
-      yield current.value;
-      current = current.next;
-    }
-  }
-}
-
