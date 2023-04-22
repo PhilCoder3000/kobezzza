@@ -1,9 +1,9 @@
-export function* ontoIter(obj: IterableIterator<Object>) {
+export function* intoIter(obj: Object | IterableIterator<Object>) {
   if (obj == null) {
     return;
   }
 
-  if (obj[Symbol.iterator] != null) {
+  if (Symbol.iterator in obj && obj[Symbol.iterator] != null) {
     yield* obj[Symbol.iterator]();
     return;
   }
@@ -18,3 +18,13 @@ export function* ontoIter(obj: IterableIterator<Object>) {
 
   yield obj;
 }
+
+function foo(data: number[]) {
+  const iter = intoIter(data);
+
+  for (const el of iter) {
+    console.log(el);
+  }
+}
+
+foo([1, 2, 3]);

@@ -70,13 +70,23 @@ function getPlugins({ isDev }: Params): webpack.WebpackPluginInstance[] {
         charset: 'UTF-8',
       },
     }),
+    new ForkTsCheckerWebpackPlugin({
+      async: isDev,
+      typescript: {
+        configFile: path.resolve(__dirname, 'tsconfig.json'),
+        diagnosticOptions: {
+          syntactic: true,
+          semantic: true,
+          declaration: true,
+          global: true,
+        },
+        mode: 'write-references',
+      }
+    }),
   ];
 
   if (isDev) {
     plugins.push(
-      new ForkTsCheckerWebpackPlugin({
-        async: false,
-      }),
       new webpack.HotModuleReplacementPlugin(),
       new webpack.ProgressPlugin(),
     );
