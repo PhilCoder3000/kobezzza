@@ -46,11 +46,11 @@ export function encode(array: AvailableValue[], schema: Schema) {
   return buffer;
 }
 
-export function decode(array: ArrayBuffer, schema: Schema): Array<unknown> {
-  return [];
-}
+// export function decode(array: ArrayBuffer, schema: Schema): Array<unknown> {
+//   return [];
+// }
 
-class BitArray {
+export class BitArray {
   buffer: ArrayBuffer;
   view: DataView;
   bitOffset: number;

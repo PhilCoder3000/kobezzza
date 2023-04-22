@@ -4,26 +4,38 @@ import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 
 interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;
 }
 
 type Env = {
+  WEBPACK_BUNDLE?: boolean;
+  WEBPACK_BUILD?: boolean;
+  WEBPACK_SERVE?: boolean;
+};
+
+type Args = {
   mode: 'development' | 'production';
+  env: Env;
 };
 
 type Params = {
+  isBuild: boolean;
+  isServe: boolean;
   isDev: boolean;
 };
 
-function getConfig(env: Env): Configuration {
+function getConfig(env: Env, args: Args): Configuration {
   const params: Params = {
-    isDev: env.mode === 'development',
+    isBuild: !!env.WEBPACK_BUILD,
+    isServe: !!env.WEBPACK_SERVE,
+    isDev: args.mode === 'development',
   };
 
   return {
-    mode: env.mode || 'development',
+    mode: args.mode || 'development',
     entry: {
       app: './src/index.ts',
       hot: 'webpack/hot/dev-server.js',
@@ -31,8 +43,9 @@ function getConfig(env: Env): Configuration {
     },
     output: {
       publicPath: '/',
-      filename: '[name].[contenthash].js',
       path: path.resolve(__dirname, 'dist'),
+      filename: '[name].[contenthash].js',
+      chunkFilename: '[name].[contenthash].js',
       clean: true,
     },
     devtool: 'inline-source-map',
@@ -42,7 +55,7 @@ function getConfig(env: Env): Configuration {
     devServer: getDevServer(params),
     plugins: getPlugins(params),
     module: getModules(),
-    optimization: getOptimization(),
+    optimization: getOptimization(params),
   };
 }
 
@@ -119,29 +132,39 @@ function getModules(): webpack.ModuleOptions {
   };
 }
 
-function getDevServer({ isDev }: Params): WebpackDevServerConfiguration | undefined {
+function getDevServer({
+  isDev,
+}: Params): WebpackDevServerConfiguration | undefined {
   if (isDev) {
-
     return {
       static: path.join(__dirname, 'dist'),
       open: true,
       port: 3000,
-      hot: true,
       client: {
         overlay: true,
       },
       historyApiFallback: true,
     };
   }
-  return undefined
+  return undefined;
 }
 
-function getOptimization(): Configuration['optimization'] {
+function getOptimization({ isDev }: Params): Configuration['optimization'] {
+  if (isDev) {
+    return undefined;
+  }
   return {
     runtimeChunk: 'single',
     splitChunks: {
       chunks: 'all',
     },
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+      }),
+    ],
+    sideEffects: false,
   };
 }
 

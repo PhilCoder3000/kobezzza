@@ -1,4 +1,4 @@
-import { encode, decode } from './bit-code';
+import { encode } from './bit-code';
 
 export function renderHM2() {
   const imageMaker = new ImageMaker();
@@ -18,7 +18,7 @@ export function renderHM2() {
   const data = encode([2, 3, true, false], schema);
   // const data = encode([2, 3, true, false, 'ab'], schema);
   console.log(data);
-  console.log(decode(data, schema));
+  // console.log(decode(data, schema));
 
   return imageMaker.render();
 }
