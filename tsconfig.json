@@ -1,23 +1,34 @@
 {
   "compilerOptions": {
+    "target": "ESNext",
+    "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "declaration": true,
+    "sourceMap": true,
     "baseUrl": ".",
     "outDir": "./dist",
-    "target": "ESNext",
-    "module": "ESNext",
-    "strict": true,
-    "declaration": true,
     "allowJs": false,
     "experimentalDecorators": true,
-    "noImplicitOverride": true,
-    "moduleResolution": "node",
-    "sourceMap": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"]
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "paths": {
+      "*": ["node_modules/*"]
+    }
   },
   "include": ["src"],
-  "exclude": ["dist"],
+  "exclude": ["dist", "node_modules"],
   "ts-node": {
     "compilerOptions": {
       "module": "CommonJS"

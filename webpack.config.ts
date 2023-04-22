@@ -13,10 +13,6 @@ type Env = {
   mode: 'development' | 'production';
 };
 
-type Argv = {
-  a: string;
-};
-
 type Params = {
   isDev: boolean;
 };
@@ -27,7 +23,7 @@ function getConfig(env: Env): Configuration {
   };
 
   return {
-    mode: 'development',
+    mode: env.mode || 'development',
     entry: {
       app: './src/index.ts',
       hot: 'webpack/hot/dev-server.js',
@@ -43,15 +39,15 @@ function getConfig(env: Env): Configuration {
     resolve: {
       extensions: ['.ts', '.js'],
     },
-    devServer: getDevServer(),
-    plugins: getPlugins(),
+    devServer: getDevServer(params),
+    plugins: getPlugins(params),
     module: getModules(),
     optimization: getOptimization(),
   };
 }
 
-function getPlugins(): webpack.WebpackPluginInstance[] {
-  return [
+function getPlugins({ isDev }: Params): webpack.WebpackPluginInstance[] {
+  const plugins: webpack.WebpackPluginInstance[] = [
     new HtmlWebpackPlugin({
       publicPath: '/',
       title: 'Kobezzza forever',
@@ -61,12 +57,18 @@ function getPlugins(): webpack.WebpackPluginInstance[] {
         charset: 'UTF-8',
       },
     }),
-    new ForkTsCheckerWebpackPlugin({
-      async: false,
-    }),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.ProgressPlugin(),
   ];
+
+  if (isDev) {
+    plugins.push(
+      new ForkTsCheckerWebpackPlugin({
+        async: false,
+      }),
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.ProgressPlugin(),
+    );
+  }
+  return plugins;
 }
 
 function getModules(): webpack.ModuleOptions {
@@ -117,17 +119,21 @@ function getModules(): webpack.ModuleOptions {
   };
 }
 
-function getDevServer(): WebpackDevServerConfiguration {
-  return {
-    static: path.join(__dirname, 'dist'),
-    open: true,
-    port: 3000,
-    hot: true,
-    client: {
-      overlay: true,
-    },
-    historyApiFallback: true,
-  };
+function getDevServer({ isDev }: Params): WebpackDevServerConfiguration | undefined {
+  if (isDev) {
+
+    return {
+      static: path.join(__dirname, 'dist'),
+      open: true,
+      port: 3000,
+      hot: true,
+      client: {
+        overlay: true,
+      },
+      historyApiFallback: true,
+    };
+  }
+  return undefined
 }
 
 function getOptimization(): Configuration['optimization'] {
