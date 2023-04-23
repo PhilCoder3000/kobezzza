@@ -2,7 +2,7 @@ import Router, { Route } from './utils/routing';
 import './homeworks/2-canvas/ImageMaker';
 import './index.css';
 import { renderMain } from './homeworks/1-bitwise';
-import { renderHM2 } from './homeworks/2-canvas/ImageMaker';
+import { renderHM2 } from './homeworks/2-canvas';
 import { renderHM3 } from './homeworks/3-list/renderHM3';
 
 const body = document.querySelector('body') as HTMLBodyElement;

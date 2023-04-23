@@ -1,9 +1,12 @@
+import { SimpleBit } from 'utils/structures/bitwise/SimpleBit';
+
 type AvailableValue = string | number | boolean;
 
 type Schema = Array<[number, 'number' | 'boolean' | 'ascii']>;
 
 export function encode(array: AvailableValue[], schema: Schema) {
-  const buffer = new ArrayBuffer(Math.ceil(array.length));
+  const length = schema.reduce((acc, [bitCount]) => acc + bitCount, 0) * 2;
+  const buffer = new ArrayBuffer(Math.ceil(length));
   const view = new DataView(buffer);
 
   let byteOffset = 0;
@@ -14,104 +17,83 @@ export function encode(array: AvailableValue[], schema: Schema) {
     const [bitCount, valueType] = schema[i];
     const value = array[i];
 
-    if (typeof value === valueType) {
-      if (bitCount === 16) {
-        // view.setUint16(currentByte, 'ab')
-        // byteOffset += 2;
+    if (bitCount <= 8) {
+      if (bitOffset + bitCount <= 8) {
+        if (valueType === 'number') {
+          currentByte |= Number(value) << bitOffset;
+          bitOffset += bitCount;
+        }
+        if (valueType === 'boolean') {
+          currentByte |= Number(value) << bitOffset;
+          bitOffset += bitCount;
+        }
       } else {
-        if (bitOffset + bitCount >= 2 ** bitCount) {
-          view.setInt8(byteOffset, currentByte);
-          bitOffset = 0;
-          currentByte = 0;
-        } else {
-          if (typeof value === 'number') {
-            if (value >= 2 ** bitCount) {
-              throw new Error(`Max value: ${2 ** bitCount}`);
-            } else {
-              currentByte |= value << bitOffset;
-              bitOffset += bitCount;
-            }
+        view.setUint8(byteOffset, currentByte);
+        currentByte = 0;
+        bitOffset = 0;
+        if (valueType === 'number') {
+          currentByte = Number(value);
+          bitOffset += bitCount;
+        }
+        if (valueType === 'boolean') {
+          currentByte = Number(value);
+          bitOffset += bitCount;
+        }
+      }
+    } else {
+      if (bitOffset > 0) {
+        view.setUint8(byteOffset, currentByte);
+        currentByte = 0;
+        bitOffset = 0;
+        byteOffset++;
+      }
+      if (valueType === 'ascii') {
+        if (typeof value === 'string') {
+          for (let i = 0; i < value.length; i++) {
+            view.setUint8(byteOffset, value.charCodeAt(i));
+            byteOffset++;
           }
         }
       }
-
-      bitOffset += bitCount;
-    } else {
-      throw new Error(
-        `Type of value: ${value} not equal scheme type ${valueType}`,
-      );
     }
   }
 
   return buffer;
 }
 
-// export function decode(array: ArrayBuffer, schema: Schema): Array<unknown> {
-//   return [];
-// }
+export function decode(array: ArrayBuffer, schema: Schema): Array<unknown> {
+  const view = new DataView(array);
+  let bitOffset = 0;
+  let byteOffset = 0;
+  const result: AvailableValue[] = [];
+  const readBit = new SimpleBit(new Uint8Array(view.buffer));
 
-export class BitArray {
-  buffer: ArrayBuffer;
-  view: DataView;
-  bitOffset: number;
-  byteOffset: number;
-
-  constructor() {
-    this.buffer = new ArrayBuffer(1024);
-    this.view = new DataView(this.buffer);
-    this.bitOffset = 0;
-    this.byteOffset = 0;
-  }
-
-  appendBits(value: number, numBits: number) {
-    let remainingBits = numBits;
-    while (remainingBits > 0) {
-      if (this.bitOffset === 0) {
-        this.view.setUint8(this.byteOffset, 0);
+  for (let i = 0; i < schema.length; i++) {
+    const [bitCount, valueType] = schema[i];
+    if (bitCount <= 8) {
+      if (bitOffset + bitCount > 8) {
+        bitOffset = 0;
+        byteOffset++;
       }
-      const bitsToWrite = Math.min(remainingBits, 8 - this.bitOffset);
-      const shift = 8 - this.bitOffset - bitsToWrite;
-      const mask = (1 << bitsToWrite) - 1;
-      const shiftedValue = (value >> shift) & mask;
-      this.view.setUint8(
-        this.byteOffset,
-        this.view.getUint8(this.byteOffset) | (shiftedValue << (8 - this.bitOffset - bitsToWrite))
-      );
-      this.bitOffset += bitsToWrite;
-      remainingBits -= bitsToWrite;
-      if (this.bitOffset === 8) {
-        this.bitOffset = 0;
-        this.byteOffset++;
+
+      let bitIndex = bitOffset;
+      const writeBit = new SimpleBit(new Uint8Array(1));
+
+      while (bitIndex < bitOffset + bitCount) {
+        const bit = readBit.get(byteOffset, bitIndex);
+        writeBit.set(0, bitIndex, bit);
+        bitIndex++;
       }
-      if (this.byteOffset >= this.buffer.byteLength) {
-        const oldBuffer = this.buffer;
-        this.buffer = new ArrayBuffer(oldBuffer.byteLength * 2);
-        new Uint8Array(this.buffer).set(new Uint8Array(oldBuffer));
-        this.view = new DataView(this.buffer);
+
+      bitOffset += bitIndex;
+
+      if (valueType === 'number') {
+        result.push(writeBit.getByte(0).toFixed(10));
+      }
+      if (valueType === 'boolean') {
+        result.push(Boolean(writeBit.getByte(0)));
       }
     }
   }
-
-  toBuffer() {
-    return this.buffer.slice(0, this.byteOffset + (this.bitOffset > 0 ? 1 : 0));
-  }
+  return [];
 }
-
-// function encode(data, schema) {
-//   const bitArray = new BitArray();
-//   for (let i = 0; i < schema.length; i++) {
-//     const [size, type] = schema[i];
-//     const value = data[i];
-//     if (type === 'number') {
-//       bitArray.appendBits(value, size);
-//     } else if (type === 'boolean') {
-//       bitArray.appendBits(value ? 1 : 0, size);
-//     } else if (type === 'ascii') {
-//       for (let j = 0; j < value.length; j++) {
-//         const charCode = value.charCodeAt(j);
-//         bitArray.appendBits(charCode, 8);
-//       }
-//     }
-//   }
-//   return bitArray.toBuffer();
-// }
