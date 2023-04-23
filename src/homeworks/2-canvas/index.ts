@@ -7,13 +7,14 @@ export function renderHM2() {
   imageMaker.addInverseBtn();
   imageMaker.addGreyScaleBtn();
   imageMaker.addYellowToBlue();
+  imageMaker.addBlink();
 
   const schema: Array<[number, 'number' | 'boolean' | 'ascii']> = [
     [3, 'number'],
     [2, 'number'],
     [1, 'boolean'],
     [1, 'boolean'],
-    [16, 'ascii'],
+    // [16, 'ascii'],
   ];
 
   const data = encode([2, 3, true, false], schema);

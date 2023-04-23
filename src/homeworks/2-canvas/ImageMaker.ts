@@ -22,6 +22,23 @@ export class ImageMaker {
     this.#setImageData(imageData);
   }
 
+  *iterBlick() {
+    const imageData = this.#getImageData();
+    if (!imageData) {
+      return;
+    }
+
+    while (true) {
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        imageData.data[i] = imageData.data[i + 1];
+        imageData.data[i + 1] = imageData.data[i + 2];
+        imageData.data[i + 2] = imageData.data[i];
+      }
+      this.#setImageData(imageData);
+      yield;
+    }
+  }
+
   inverse() {
     const imageData = this.#getImageData();
     if (!imageData) {
@@ -133,6 +150,21 @@ export class ImageMaker {
   addYellowToBlue() {
     this.#root.appendChild(
       this.#createBtn('yellow to blue', this.yellowToBlue),
+    );
+  }
+
+  addBlink() {
+    this.#root.appendChild(
+      this.#createBtn('blink btn', () => {
+        const iter = this.iterBlick();
+
+        const interval = setInterval(() => {
+          const res = iter.next();
+          if (res.done) {
+            clearInterval(interval);
+          }
+        }, 100);
+      }),
     );
   }
 
