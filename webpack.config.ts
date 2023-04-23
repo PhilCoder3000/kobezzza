@@ -27,6 +27,9 @@ type Params = {
   isDev: boolean;
 };
 
+const src = path.resolve(__dirname, 'src');
+const dist = path.resolve(__dirname, 'dist');
+
 function getConfig(env: Env, args: Args): Configuration {
   const params: Params = {
     isBuild: !!env.WEBPACK_BUILD,
@@ -43,7 +46,7 @@ function getConfig(env: Env, args: Args): Configuration {
     },
     output: {
       publicPath: '/',
-      path: path.resolve(__dirname, 'dist'),
+      path: dist,
       filename: '[name].[contenthash].js',
       chunkFilename: '[name].[contenthash].js',
       clean: true,
@@ -51,6 +54,10 @@ function getConfig(env: Env, args: Args): Configuration {
     devtool: 'inline-source-map',
     resolve: {
       extensions: ['.ts', '.js'],
+      preferAbsolute: true,
+      modules: [src, 'node_modules'],
+      mainFiles: ['index'],
+      alias: {},
     },
     devServer: getDevServer(params),
     plugins: getPlugins(params),
@@ -81,7 +88,7 @@ function getPlugins({ isDev }: Params): webpack.WebpackPluginInstance[] {
           global: true,
         },
         mode: 'write-references',
-      }
+      },
     }),
   ];
 
@@ -147,7 +154,7 @@ function getDevServer({
 }: Params): WebpackDevServerConfiguration | undefined {
   if (isDev) {
     return {
-      static: path.join(__dirname, 'dist'),
+      static: dist,
       open: true,
       port: 3000,
       client: {

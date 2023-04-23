@@ -1,7 +1,6 @@
-class SimpleStack extends SimpleArray {
-  cursor = 0;
+export class SimpleStack extends SimpleArray {
+  cursor = -1;
   maxLength: number;
-  head = 0;
 
   constructor(length: number) {
     super(length);
@@ -10,31 +9,33 @@ class SimpleStack extends SimpleArray {
 
   push(value: number) {
     if (this.cursor < this.maxLength) {
-      this.set(this.cursor, value);
-      this.cursor++;
-      this.head = value;
+      this.data[++this.cursor] = value
     } else {
       throw new Error('Stack overflow');
     }
   }
 
   pop() {
-    if (this.cursor > 0) {
-      const element = this.head;
-      this.set(this.cursor, 0);
-      this.cursor--;
-      this.head = this.find(this.cursor);
-      return element;
+    if (this.cursor >= 0) {
+      return this.data[this.cursor--];
     } else {
       throw new Error('Stack is empty');
     }
   }
 
   peek() {
-    if (this.head) {
-      return this.head;
+    if (this.cursor >= 0) {
+      return this.data[this.cursor];
     } else {
       throw new Error('Stack is empty');
     }
+  }
+
+  isEmpty() {
+    return this.cursor === -1
+  }
+
+  isFull() {
+    return this.cursor === this.maxLength -1
   }
 }

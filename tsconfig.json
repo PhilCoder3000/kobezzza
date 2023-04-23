@@ -24,7 +24,7 @@
     "skipLibCheck": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "paths": {
-      "*": ["node_modules/*"]
+      "*": ["node_modules", "./src/*"]
     }
   },
   "include": ["src"],

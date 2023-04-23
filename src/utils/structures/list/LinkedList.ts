@@ -1,11 +1,11 @@
-type Value = string | number;
+export type LinkedListValue = string | number;
 
-export class Node {
-  next: Nullable<Node> = null;
-  prev: Nullable<Node> = null;
-  value: Nullable<Value> = null;
+export class LinkedListNode {
+  next: Nullable<LinkedListNode> = null;
+  prev: Nullable<LinkedListNode> = null;
+  value: Nullable<LinkedListValue> = null;
 
-  constructor(value: Value) {
+  constructor(value: LinkedListValue) {
     this.value = value;
   }
 
@@ -15,15 +15,15 @@ export class Node {
 }
 
 export class LinkedList {
-  first: Nullable<Node> = null;
-  last: Nullable<Node> = null;
+  first: Nullable<LinkedListNode> = null;
+  last: Nullable<LinkedListNode> = null;
 
   isEmpty() {
     return this.first === null;
   }
 
-  insertFirst(value: Value) {
-    const newFirst = new Node(value);
+  insertFirst(value: LinkedListValue) {
+    const newFirst = new LinkedListNode(value);
     newFirst.next = this.first;
     this.first = newFirst;
     if (this.last === null) {
@@ -31,8 +31,8 @@ export class LinkedList {
     }
   }
 
-  insertLast(value: Value) {
-    const newLast = new Node(value);
+  insertLast(value: LinkedListValue) {
+    const newLast = new LinkedListNode(value);
     newLast.prev = this.last;
     if (this.last) {
       this.last.next = newLast;
@@ -43,8 +43,8 @@ export class LinkedList {
     }
   }
 
-  insertAfter(link: string, value: Value) {
-    const newLink = new Node(value);
+  insertAfter(link: string, value: LinkedListValue) {
+    const newLink = new LinkedListNode(value);
     const element = this.find(link);
     if (element !== -1) {
       const next = element.next;
@@ -58,16 +58,19 @@ export class LinkedList {
   }
 
   deleteFirst() {
-    if (this.first !== null) {
-      const newFirst = this.first.next;
-      if (newFirst) {
-        newFirst.prev = null;
-        this.first = newFirst;
-      } else {
-        this.first = null;
-        this.last = null;
-      }
+    if (this.first == null) {
+      throw new Error('List is empty')
     }
+    const deletedItem = this.first;
+    const newFirst = this.first.next;
+    if (newFirst) {
+      newFirst.prev = null;
+      this.first = newFirst;
+    } else {
+      this.first = null;
+      this.last = null;
+    }
+    return deletedItem;
   }
 
   deleteLast() {
@@ -89,8 +92,8 @@ export class LinkedList {
     }
   }
 
-  find(arg: Value | Node): Node | -1 {
-    if (arg instanceof Node) {
+  find(arg: LinkedListValue | LinkedListNode): LinkedListNode | -1 {
+    if (arg instanceof LinkedListNode) {
       let current = this.first;
       while (current) {
         if (arg === current) {
@@ -113,7 +116,7 @@ export class LinkedList {
     return -1;
   }
 
-  delete(link: Node) {
+  delete(link: LinkedListNode) {
     const next = link.next;
     const prev = link.prev;
     if (prev && next) {
