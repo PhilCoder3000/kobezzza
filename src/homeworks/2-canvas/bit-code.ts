@@ -77,23 +77,23 @@ export function decode(array: ArrayBuffer, schema: Schema): Array<unknown> {
       }
 
       let bitIndex = bitOffset;
-      const writeBit = new SimpleBit(new Uint8Array(1));
+      const writeByte = new SimpleBit(new Uint8Array(2));
 
       while (bitIndex < bitOffset + bitCount) {
         const bit = readBit.get(byteOffset, bitIndex);
-        writeBit.set(0, bitIndex, bit);
+        writeByte.set(0, bitIndex, bit);
         bitIndex++;
       }
 
       bitOffset += bitIndex;
 
       if (valueType === 'number') {
-        result.push(writeBit.getByte(0).toFixed(10));
+        result.push(writeByte.getByte(0).toFixed(10));
       }
       if (valueType === 'boolean') {
-        result.push(Boolean(writeBit.getByte(0)));
+        result.push(Boolean(writeByte.getByte(0)));
       }
     }
   }
-  return [];
+  return result;
 }

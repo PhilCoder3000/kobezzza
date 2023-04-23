@@ -1,29 +1,40 @@
-import { LinkedList, LinkedListNode, LinkedListValue } from '../list/LinkedList';
+import { LinkedList, LinkedListValue } from '../list/LinkedList';
 
 export class SimpleQueue {
   data: LinkedList;
-  head: LinkedListNode | null = null;
 
   constructor() {
     this.data = new LinkedList();
   }
 
   push(value: LinkedListValue) {
-    this.data.insertLast(value);
-    this.head = this.data.last
+    this.data.insertFirst(value);
   }
   
   pop() {
-    const deletedItem = this.data.deleteFirst();
-    this.head = this.data.last
+    const deletedItem = this.data.deleteLast();
     return deletedItem
   }
 
-  peekFront() {
+  peekFirst() {
     return this.data.first;
+  }
+
+  peekLast() {
+    return this.data.last;
   }
 
   isEmpty() {
     return this.data.first == null;
   }
-}
+
+  displayQueue() {
+    let current = this.peekFirst()
+    let strQueue = '';
+    while (current) {
+      strQueue += '>' + current.value;
+      current = current.next
+    }
+    console.log(strQueue)
+  }
+ }

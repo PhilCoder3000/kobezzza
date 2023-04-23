@@ -1,4 +1,4 @@
-class SimpleArray implements BaseArray {
+export class SimpleArray implements BaseArray {
   data: Uint8Array;
 
   constructor(length: number) {

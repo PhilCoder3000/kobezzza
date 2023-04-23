@@ -1,4 +1,5 @@
 import { LinkedList } from '../../utils/structures/list/LinkedList';
+import { Structure } from './Structure';
 const list = new LinkedList();
 const ul = document.createElement('ul');
 const root = document.createElement('div');
@@ -43,6 +44,21 @@ export function renderHM3() {
   root.appendChild(deleteLast);
   root.appendChild(deleteFirst);
   root.appendChild(ul);
+
+  const jackBlack = new Structure([
+    ['name', 'utf16', 10],
+    ['lastName', 'utf16', 10],
+    ['age', 'u16'] 
+  ]);
+  
+  jackBlack.set('name', 'John');
+  jackBlack.set('lastName', 'Black');
+  jackBlack.set('age', 53);
+  
+  console.log(jackBlack.get('name'));
+  console.log(jackBlack.get('lastName'));
+  console.log(jackBlack.get('age'));
+  
   return root;
 }
 

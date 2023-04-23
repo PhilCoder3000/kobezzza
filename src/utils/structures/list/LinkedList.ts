@@ -24,22 +24,25 @@ export class LinkedList {
 
   insertFirst(value: LinkedListValue) {
     const newFirst = new LinkedListNode(value);
-    newFirst.next = this.first;
+    if (this.first) {
+      newFirst.next = this.first;
+      this.first.prev = newFirst;
+    }
     this.first = newFirst;
-    if (this.last === null) {
-      this.last = newFirst;
+    if (this.last == null) {
+      this.last = this.first;
     }
   }
 
   insertLast(value: LinkedListValue) {
     const newLast = new LinkedListNode(value);
-    newLast.prev = this.last;
     if (this.last) {
+      newLast.prev = this.last;
       this.last.next = newLast;
     }
     this.last = newLast;
     if (this.first === null) {
-      this.first = newLast;
+      this.first = this.last;
     }
   }
 
@@ -74,14 +77,19 @@ export class LinkedList {
   }
 
   deleteLast() {
-    if (this.last !== null) {
-      if (this.last.prev) {
-        this.last = this.last.prev;
-        this.last.next = null;
-      } else {
-        this.last = null;
-      }
+    if (this.last == null) {
+      throw new Error('List is empty')
     }
+    const deletedItem = this.last;
+    const newLast = this.last.prev;
+    if (newLast) {
+      newLast.next = null;
+      this.last = newLast;
+    } else {
+      this.last = null;
+      this.first = null;
+    }
+    return deletedItem
   }
 
   displayList() {

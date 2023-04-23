@@ -1,3 +1,5 @@
+import { SimpleArray } from '../array/SimpleArray';
+
 export class SimpleStack extends SimpleArray {
   cursor = -1;
   maxLength: number;

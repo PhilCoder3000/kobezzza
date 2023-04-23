@@ -18,7 +18,7 @@ export class TypedArrayStack {
 
   push(value: number) {
     if (this.cursor < this.maxLength) {
-      this.array[++this.cursor] = value
+      this.array[++this.cursor] = value;
     } else {
       throw new Error('Stack overflow');
     }
@@ -32,9 +32,15 @@ export class TypedArrayStack {
     }
   }
 
-  
-  get head() : number {
-    return 12
+  get head(): number {
+    return this.array[this.cursor];
   }
-  
+
+  displayStack() {
+    let strQueue = '';
+    for (let i = this.cursor; i >= 0; i--) {
+      strQueue += '|' + this.array[i] + '|\n';
+    }
+    console.log(strQueue);
+  }
 }

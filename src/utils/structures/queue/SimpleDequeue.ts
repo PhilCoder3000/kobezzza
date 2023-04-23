@@ -27,7 +27,7 @@ export class SimpleDequeue {
     return this.data.deleteFirst();
   }
 
-  peekFront() {
+  peekFirst() {
     return this.data.first;
   }
 
@@ -41,5 +41,15 @@ export class SimpleDequeue {
 
   get tail(): LinkedListNode | null {
     return this.data.last;
+  }
+
+  displayDequeue() {
+    let current = this.peekFirst()
+    let strQueue = '';
+    while (current) {
+      strQueue += '-' + current.value;
+      current = current.next
+    }
+    console.log(strQueue)
   }
 }
