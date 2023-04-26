@@ -15,7 +15,7 @@ body.appendChild(root);
 const routes: Route[] = [
   {
     path: '/',
-    element: renderMain
+    element: renderMain,
   },
   {
     path: '/homework-2',
@@ -23,7 +23,7 @@ const routes: Route[] = [
   },
   {
     path: '/homework-3',
-    element: renderHM3
+    element: renderHM3,
   },
   {
     path: '/homework-4',
@@ -31,8 +31,8 @@ const routes: Route[] = [
   },
   {
     path: '/homework-5',
-    element: renderHM5
-  }
+    element: renderHM5,
+  },
 ];
 
 const router = new Router(routes);
