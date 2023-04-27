@@ -1,17 +1,9 @@
-type TypedArray =
-  | Uint8ArrayConstructor
-  | Uint16ArrayConstructor
-  | Uint32ArrayConstructor
-  | Int8ArrayConstructor
-  | Int16ArrayConstructor
-  | Int32ArrayConstructor;
-
 export class TypedArrayStack {
   array;
   cursor = -1;
   maxLength;
 
-  constructor(Array: TypedArray, length: number) {
+  constructor(Array: TypedArrayConstructor, length: number) {
     this.array = new Array(length);
     this.maxLength = length;
   }

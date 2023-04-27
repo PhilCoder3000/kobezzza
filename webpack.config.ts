@@ -16,33 +16,24 @@ type Env = {
   WEBPACK_SERVE?: boolean;
 };
 
-type Args = {
-  mode: 'development' | 'production';
-  env: Env;
-};
-
 type Params = {
   isBuild: boolean;
   isServe: boolean;
-  isDev: boolean;
 };
 
 const src = path.resolve(__dirname, 'src');
 const dist = path.resolve(__dirname, 'dist');
 
-function getConfig(env: Env, args: Args): Configuration {
+function getConfig(env: Env): Configuration {
   const params: Params = {
     isBuild: !!env.WEBPACK_BUILD,
     isServe: !!env.WEBPACK_SERVE,
-    isDev: args.mode === 'development',
   };
 
   return {
-    mode: args.mode || 'development',
+    mode: env.WEBPACK_SERVE ? 'development' : 'production',
     entry: {
       app: './src/index.ts',
-      hot: 'webpack/hot/dev-server.js',
-      client: 'webpack-dev-server/client/index.js?hot=true&live-reload=true',
     },
     output: {
       publicPath: '/',
@@ -66,7 +57,7 @@ function getConfig(env: Env, args: Args): Configuration {
   };
 }
 
-function getPlugins({ isDev }: Params): webpack.WebpackPluginInstance[] {
+function getPlugins({ isServe }: Params): webpack.WebpackPluginInstance[] {
   const plugins: webpack.WebpackPluginInstance[] = [
     new HtmlWebpackPlugin({
       publicPath: '/',
@@ -78,7 +69,7 @@ function getPlugins({ isDev }: Params): webpack.WebpackPluginInstance[] {
       },
     }),
     new ForkTsCheckerWebpackPlugin({
-      async: isDev,
+      async: isServe,
       typescript: {
         configFile: path.resolve(__dirname, 'tsconfig.json'),
         diagnosticOptions: {
@@ -92,9 +83,8 @@ function getPlugins({ isDev }: Params): webpack.WebpackPluginInstance[] {
     }),
   ];
 
-  if (isDev) {
+  if (isServe) {
     plugins.push(
-      new webpack.HotModuleReplacementPlugin(),
       new webpack.ProgressPlugin(),
     );
   }
@@ -150,13 +140,13 @@ function getModules(): webpack.ModuleOptions {
 }
 
 function getDevServer({
-  isDev,
+  isServe,
 }: Params): WebpackDevServerConfiguration | undefined {
-  if (isDev) {
+  if (isServe) {
     return {
-      static: dist,
       open: true,
       port: 3000,
+      hot: true,
       client: {
         overlay: true,
       },
@@ -166,9 +156,11 @@ function getDevServer({
   return undefined;
 }
 
-function getOptimization({ isDev }: Params): Configuration['optimization'] {
-  if (isDev) {
-    return undefined;
+function getOptimization({ isServe }: Params): Configuration['optimization'] {
+  if (isServe) {
+    return {
+      runtimeChunk: 'single'
+    };
   }
   return {
     runtimeChunk: 'single',
