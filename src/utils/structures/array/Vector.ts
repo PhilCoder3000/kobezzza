@@ -44,6 +44,19 @@ export class Vector {
     this.#data.set(0, value);
   }
 
+  set(index: number, value: number) {
+    if (this.#cursor === this.#length - 1) {
+      this.#grow();
+    }
+    this.#data.set(index, value);
+  }
+
+  
+  get(index: number) {
+    return this.#data.get(index)
+  }
+  
+
   public get length(): number {
     return this.#cursor;
   }

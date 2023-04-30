@@ -1,4 +1,5 @@
 import { Vector } from 'utils/structures/array/Vector';
+import { SimpleHashMap } from 'utils/structures/hashMap/SimpleHashMap';
 import { Matrix3D } from 'utils/structures/matrix/Matrix3D';
 
 export function renderHM6() {
@@ -6,6 +7,17 @@ export function renderHM6() {
 
   renderVector(root);
   renderMatrix3D(root);
+
+  const map = new SimpleHashMap(120);
+
+  map.set('foo', 1);
+  map.set(42, 10);
+  map.set(document, 100);
+  
+  console.log(map.get(42));          // 10
+  console.log(map.has(document));    // true
+  console.log(map.delete(document)); // 100
+  console.log(map.has(document));    // false
 
   return root;
 }

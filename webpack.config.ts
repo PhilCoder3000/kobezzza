@@ -171,6 +171,16 @@ function getOptimization({ isServe }: Params): Configuration['optimization'] {
     minimizer: [
       new TerserPlugin({
         parallel: true,
+        terserOptions: {
+          compress: {
+            drop_console: true,
+            unsafe: true,
+            unused: true,
+          },
+          output: {
+            comments: false,
+          },
+        },
       }),
     ],
     sideEffects: false,
