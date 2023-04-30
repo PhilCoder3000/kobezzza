@@ -49,7 +49,7 @@ export class Vector {
   }
 
   #grow() {
-    const newLength = this.#length * 2.3;
+    const newLength = Math.round(this.#length * 2.3);
     this.#length = newLength;
     const newArr = new SimpleArray(this.Arr, newLength);
     this.#data = this.#copy(this.#data, newArr, this.#cursor);
@@ -60,5 +60,13 @@ export class Vector {
       to.set(i, from.get(i));
     }
     return to;
+  }
+
+  *[Symbol.iterator]() {
+    let cursor = 0;
+
+    while(cursor <= this.#length) {
+      yield this.#data.get(cursor++)
+    }
   }
 }

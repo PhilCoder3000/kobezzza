@@ -46,6 +46,10 @@ export class Matrix3D {
   }
 
   display() {
+    console.log(this.toString());
+  }
+
+  toString() {
     let rowStr = '';
     for (let depth = 0; depth < this.#depth; depth++) {
       rowStr += 'Depth:' + depth + '\n';
@@ -59,6 +63,6 @@ export class Matrix3D {
         rowStr += '\n';
       }
     }
-    console.log(rowStr);
+    return rowStr
   }
 }
