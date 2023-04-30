@@ -1,31 +1,31 @@
 import { LinkedList, LinkedListValue } from '../list/LinkedList';
 
 export class SimpleQueue {
-  data: LinkedList;
+  #data: LinkedList;
 
   constructor() {
-    this.data = new LinkedList();
+    this.#data = new LinkedList();
   }
 
   push(value: LinkedListValue) {
-    this.data.insertFirst(value);
+    this.#data.insertFirst(value);
   }
   
   pop() {
-    const deletedItem = this.data.deleteLast();
+    const deletedItem = this.#data.deleteLast();
     return deletedItem
   }
 
   peekFirst() {
-    return this.data.first;
+    return this.#data.first;
   }
 
   peekLast() {
-    return this.data.last;
+    return this.#data.last;
   }
 
   isEmpty() {
-    return this.data.first == null;
+    return this.#data.first == null;
   }
 
   displayQueue() {
@@ -36,5 +36,14 @@ export class SimpleQueue {
       current = current.next
     }
     console.log(strQueue)
+  }
+
+  *[Symbol.iterator]() {
+    let current = this.#data.first
+
+    while (current) {
+      yield current.value
+      current = current.next
+    }
   }
  }

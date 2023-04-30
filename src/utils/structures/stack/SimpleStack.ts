@@ -1,17 +1,18 @@
 import { SimpleArray } from '../array/SimpleArray';
 
-export class SimpleStack extends SimpleArray {
+export class SimpleStack {
+  #data: SimpleArray
   cursor = -1;
   maxLength: number;
 
   constructor(length: number) {
-    super(length);
+    this.#data = new SimpleArray(Uint8Array, length)
     this.maxLength = length;
   }
 
   push(value: number) {
     if (this.cursor < this.maxLength) {
-      this.data[++this.cursor] = value
+      this.#data.set(++this.cursor, value)
     } else {
       throw new Error('Stack overflow');
     }
@@ -19,7 +20,7 @@ export class SimpleStack extends SimpleArray {
 
   pop() {
     if (this.cursor >= 0) {
-      return this.data[this.cursor--];
+      return this.#data.get(this.cursor--);
     } else {
       throw new Error('Stack is empty');
     }
@@ -27,7 +28,7 @@ export class SimpleStack extends SimpleArray {
 
   peek() {
     if (this.cursor >= 0) {
-      return this.data[this.cursor];
+      return this.#data.get(this.cursor);
     } else {
       throw new Error('Stack is empty');
     }

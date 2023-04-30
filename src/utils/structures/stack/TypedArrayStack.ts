@@ -35,4 +35,12 @@ export class TypedArrayStack {
     }
     console.log(strQueue);
   }
+
+  *[Symbol.iterator]() {
+    let cursor = this.cursor;
+
+    while (cursor >= 0) {
+      yield this.array[cursor--]
+    }
+  }
 }

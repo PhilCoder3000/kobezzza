@@ -52,4 +52,13 @@ export class SimpleDequeue {
     }
     console.log(strQueue)
   }
+
+  *[Symbol.iterator]() {
+    let current = this.data.first
+
+    while (current) {
+      yield current.value
+      current = current.next
+    }
+  }
 }
