@@ -6,6 +6,7 @@ import { renderHM2 } from './homeworks/2-canvas';
 import { renderHM3 } from './homeworks/3-list/renderHM3';
 import { renderHM4 } from 'homeworks/4-queue';
 import { renderHM6 } from 'homeworks/6';
+import { renderHM7 } from 'homeworks/7';
 
 const body = document.querySelector('body') as HTMLBodyElement;
 const root = document.createElement('div');
@@ -33,6 +34,10 @@ const routes: Route[] = [
     path: '/homework-6',
     element: renderHM6,
   },
+  {
+    path: '/homework-7',
+    element: renderHM7
+  }
 ];
 
 const router = new Router(routes);
@@ -50,3 +55,4 @@ router.getPath().forEach((path) => {
 });
 
 body.appendChild(ul);
+
