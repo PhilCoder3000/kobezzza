@@ -2,8 +2,6 @@ import { MapGraph, MapVertex } from 'utils/structures/graph/MapGraph';
 import { SimpleGraph, SimpleVertex } from 'utils/structures/graph/SimpleGraph';
 
 export function renderHM7() {
-  
-
   const graph = new MapGraph();
 
   const A = new MapVertex('A');
@@ -27,39 +25,41 @@ export function renderHM7() {
   const L = new MapVertex('L');
   graph.addVertex(L);
 
-  graph.addEdge(A, B);
-  graph.addEdge(A, C);
-  graph.addEdge(A, D);
-  
-  graph.addEdge(B, L);
-  graph.addEdge(B, E);
+  graph.addEdge(A, B, 1);
+  graph.addEdge(A, C, 2);
+  graph.addEdge(A, D, 3);
 
-  graph.addEdge(E, G);
-  graph.addEdge(C, E);
-  graph.addEdge(D, F);
+  graph.addEdge(B, L, 5);
+  graph.addEdge(B, E, 7);
 
-  // graph.displayEdge();
+  graph.addEdge(E, G, 3);
+  graph.addEdge(C, E, 4);
+  graph.addEdge(D, F, 9);
 
-  const dfsIter = graph.dfs(A);
-
-  for (const el of dfsIter) {
+  console.log('-----dfs recursive-----');
+  graph.dfsRecursive(A)
+  console.log('-----dfsGen-----');
+  for (const el of graph.dfsGen(A)) {
+    console.log(el);
+  }
+  console.log('-----dfsGen2-----');
+  for (const el of graph.dfsGen2(A)) {
     console.log(el);
   }
 
-  console.log('-----');
-
-  const dfs2Iter = graph.dfs2(A);
-
-  for (const el of dfs2Iter) {
-    console.log(el);
-  }
+  // console.log('-----bfs-----');
   
-
-  // const bfsIter = graph.bfs()
-
-  // for (const el of bfsIter) {
+  // for (const el of graph.bfs(A)) {
   //   console.log(el);
   // }
+  
+  // console.log('-----topological sorting-----');
+
+  // console.log(graph.topologicalSorting(A))
+  
+  // console.log('-----transitive closure-----');
+
+  // console.log(graph.transitiveClosure())
 
   return document.createElement('div');
 }
@@ -91,7 +91,7 @@ export function renderGraph() {
   graph.addEdge(A, B);
   graph.addEdge(A, C);
   graph.addEdge(A, D);
-  
+
   graph.addEdge(B, L);
   graph.addEdge(B, E);
 
@@ -108,9 +108,8 @@ export function renderGraph() {
   }
 
   console.log('-----');
-  
 
-  const bfsIter = graph.bfs()
+  const bfsIter = graph.bfs();
 
   for (const el of bfsIter) {
     console.log(el);
