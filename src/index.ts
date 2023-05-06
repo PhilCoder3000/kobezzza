@@ -7,6 +7,7 @@ import { renderHM3 } from './homeworks/3-list/renderHM3';
 import { renderHM4 } from 'homeworks/4-queue';
 import { renderHM6 } from 'homeworks/6';
 import { renderHM7 } from 'homeworks/7';
+import { renderHM8 } from 'homeworks/8';
 
 const body = document.querySelector('body') as HTMLBodyElement;
 const root = document.createElement('div');
@@ -37,6 +38,10 @@ const routes: Route[] = [
   {
     path: '/homework-7',
     element: renderHM7
+  },
+  {
+    path: '/homework-8',
+    element: renderHM8,
   }
 ];
 

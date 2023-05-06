@@ -1,6 +1,7 @@
 import { Vector } from 'utils/structures/array/Vector';
 import { SimpleHashMap } from 'utils/structures/hashMap/SimpleHashMap';
 import { Matrix3D } from 'utils/structures/matrix/Matrix3D';
+import { render3DView } from './matrix3DView/matrix3DView';
 
 export function renderHM6() {
   const root = document.createElement('div');
@@ -13,11 +14,13 @@ export function renderHM6() {
   map.set('foo', 1);
   map.set(42, 10);
   map.set(document, 100);
-  
-  console.log(map.get(42));          // 10
-  console.log(map.has(document));    // true
-  console.log(map.delete(document)); // 100
-  console.log(map.has(document));    // false
+
+  // console.log(map.get(42)); // 10
+  // console.log(map.has(document)); // true
+  // console.log(map.delete(document)); // 100
+  // console.log(map.has(document)); // false
+
+  render3DView(root);
 
   return root;
 }
@@ -83,23 +86,42 @@ function renderMatrix3D(root: HTMLDivElement) {
 
   const setBtn = document.createElement('button');
   setBtn.innerText = 'Set';
-
-  const matrix = new Matrix3D(3, 3, 3);
+  setBtn.disabled = true;
 
   setBtn.onclick = () => {
-    matrix.set(
+    if (matrix) {
+      matrix.set(
+        Number(inputX.value),
+        Number(inputY.value),
+        Number(inputZ.value),
+        Number(inputValue.value),
+      );
+      renderP();
+    }
+  };
+
+  const createMatrixBtn = document.createElement('button');
+  createMatrixBtn.textContent = 'Create matrix';
+
+  let matrix: Nullable<Matrix3D> = null;
+
+  createMatrixBtn.onclick = () => {
+    matrix = new Matrix3D(
       Number(inputX.value),
       Number(inputY.value),
       Number(inputZ.value),
-      Number(inputValue.value),
     );
-    renderP();
+    setBtn.disabled = false;
+    root.removeChild(createMatrixBtn);
+    root.appendChild(setBtn);
   };
 
   const p = document.createElement('p');
 
   function renderP() {
-    p.innerHTML = matrix.toString().replaceAll('\n', '<br />');
+    if (matrix) {
+      p.innerHTML = matrix.toString().replaceAll('\n', '<br />');
+    }
   }
 
   root.appendChild(title);
@@ -107,6 +129,7 @@ function renderMatrix3D(root: HTMLDivElement) {
   root.appendChild(labelY);
   root.appendChild(labelZ);
   root.appendChild(labelValue);
-  root.appendChild(setBtn);
+  root.appendChild(createMatrixBtn);
   root.appendChild(p);
 }
+

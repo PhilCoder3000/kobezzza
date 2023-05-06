@@ -5,6 +5,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;
@@ -52,7 +53,7 @@ function getConfig(env: Env): Configuration {
     },
     devServer: getDevServer(params),
     plugins: getPlugins(params),
-    module: getModules(),
+    module: getModules(params),
     optimization: getOptimization(params),
   };
 }
@@ -81,17 +82,37 @@ function getPlugins({ isServe }: Params): webpack.WebpackPluginInstance[] {
         mode: 'write-references',
       },
     }),
+    new MiniCssExtractPlugin({
+      filename: isServe ? '[name].css' : '[name].[hash].css',
+      chunkFilename: isServe ? '[id].css' : '[id].[hash].css',
+    }),
   ];
 
   if (isServe) {
-    plugins.push(
-      new webpack.ProgressPlugin(),
-    );
+    plugins.push(new webpack.ProgressPlugin());
   }
+
   return plugins;
 }
 
-function getModules(): webpack.ModuleOptions {
+function getModules({ isServe }: Params): webpack.ModuleOptions {
+  const styleLoader = isServe ? 'style-loader' : MiniCssExtractPlugin.loader;
+  const sassLoader = {
+    loader: 'sass-loader',
+    options: {
+      sourceMap: isServe,
+    },
+  };
+
+  const postcssLoader = {
+    loader: 'postcss-loader',
+    options: {
+      postcssOptions: {
+        config: path.resolve(__dirname, 'postcss.config.js'),
+      },
+    },
+  };
+
   return {
     rules: [
       {
@@ -112,8 +133,39 @@ function getModules(): webpack.ModuleOptions {
         },
       },
       {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
+        test: /\.html$/i,
+        loader: 'html-loader',
+      },
+      {
+        test: /\.(sa|sc|c)ss$/i,
+        exclude: /\.module\.scss$/i,
+        use: [
+          styleLoader,
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              sourceMap: isServe,
+            },
+          },
+          postcssLoader,
+        ],
+      },
+      {
+        test: /\.module\.scss$/i,
+        use: [
+          styleLoader,
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              modules: true,
+              sourceMap: isServe,
+            },
+          },
+          sassLoader,
+          postcssLoader,
+        ],
       },
       {
         test: /\.(png|jpg|jpeg|gif)$/i,
@@ -159,7 +211,7 @@ function getDevServer({
 function getOptimization({ isServe }: Params): Configuration['optimization'] {
   if (isServe) {
     return {
-      runtimeChunk: 'single'
+      runtimeChunk: 'single',
     };
   }
   return {

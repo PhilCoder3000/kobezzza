@@ -3,6 +3,13 @@ declare module '*.svg' {
   export default content;
 }
 
+declare module '*.scss' {
+  const content: Record<string, string>;
+  export default content;
+}
+
+declare module '*.html';
+
 type Nullable<T> = T | null;
 declare interface ObjectConstructor
   extends Omit<ObjectConstructor, 'keys' | 'entries'> {
