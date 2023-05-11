@@ -135,18 +135,36 @@ export class LinkedBinaryTree {
     return null;
   }
 
-  preOrder() {}
+  preOrder(node: Nullable<BinaryTreeNode>) {
+    if (!this.#root) {
+      return;
+    }
+    if (node) {
+      console.log(node.value);
+      this.preOrder(node.left);
+      this.preOrder(node.right);      
+    }
+  }
 
   inOrder(node: Nullable<BinaryTreeNode>) {
     if (!this.#root) {
       return;
     }
     if (node) {
-      console.log(node.value);
       this.inOrder(node.left);
+      console.log(node.value);
       this.inOrder(node.right);
     }
   }
 
-  postOrder() {}
+  postOrder(node: Nullable<BinaryTreeNode>) {
+    if (!this.#root) {
+      return;
+    }
+    if (node) {
+      this.postOrder(node.left);
+      this.postOrder(node.right);
+      console.log(node.value);
+    }
+  }
 }

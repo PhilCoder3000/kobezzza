@@ -1,16 +1,39 @@
 import { Matrix3D } from 'utils/structures/matrix/Matrix3D';
-import style from './style.module.scss'
+import './matrix3D.css';
 import html from './matrix.html';
 
 export function render3DView(root: HTMLDivElement) {
   const view = document.createElement('div');
-  view.style.perspective = '200px';
-  view.style.width = '200px';
-  view.style.transformStyle = 'preserve-3d';
-  view.style.transition = 'all 0.5s ease-in-out';
-  view.style.perspectiveOrigin = '0% 0%';
-  view.className = style.scene;
-  view.innerHTML = html 
+  view.innerHTML = html;
+  root.appendChild(view);
+
+
+  const cube = document.querySelector('.cube');
+  const radioGroup = document.querySelector('.radio-group');
+  let currentClass = '';
+
+  if (!radioGroup) {
+    return;
+  }
+
+  function changeSide() {
+    if (!cube || !radioGroup) {
+      return;
+    }
+    const checkedRadio = radioGroup.querySelector(
+      ':checked',
+    ) as HTMLInputElement;
+    const showClass = 'show-' + checkedRadio.value;
+    if (currentClass) {
+      cube.classList.remove(currentClass);
+    }
+    cube.classList.add(showClass);
+    currentClass = showClass;
+  }
+
+  changeSide();
+
+  radioGroup.addEventListener('change', changeSide);
 
   let x = 0,
     y = 0,
@@ -106,5 +129,4 @@ export function render3DView(root: HTMLDivElement) {
   root.appendChild(rotateXBtn);
   root.appendChild(rotateYBtn);
   root.appendChild(rotateZBtn);
-  root.appendChild(view);
 }

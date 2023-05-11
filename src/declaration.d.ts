@@ -9,6 +9,7 @@ declare module '*.scss' {
 }
 
 declare module '*.html';
+declare module '*.css';
 
 type Nullable<T> = T | null;
 declare interface ObjectConstructor
