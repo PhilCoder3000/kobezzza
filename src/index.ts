@@ -1,13 +1,14 @@
 import Router, { Route } from './utils/routing';
-import './homeworks/2-canvas/ImageMaker';
 import './index.css';
-import { renderMain } from './homeworks/1-bitwise';
-import { renderHM2 } from './homeworks/2-canvas';
-import { renderHM3 } from './homeworks/3-list/renderHM3';
-import { renderHM4 } from 'homeworks/4-queue';
+import { renderMain } from 'homeworks/1';
+import { renderHM2 } from 'homeworks/2';
+import { renderHM3 } from 'homeworks/3/renderHM3';
+import { renderHM4 } from 'homeworks/4';
 import { renderHM6 } from 'homeworks/6';
 import { renderHM7 } from 'homeworks/7';
 import { renderHM8 } from 'homeworks/8';
+import { renderHM11 } from 'homeworks/11';
+import { renderHM15 } from 'homeworks/15';
 
 const body = document.querySelector('body') as HTMLBodyElement;
 const root = document.createElement('div');
@@ -42,6 +43,14 @@ const routes: Route[] = [
   {
     path: '/homework-8',
     element: renderHM8,
+  },
+  {
+    path: '/homework-11',
+    element: renderHM11,
+  },
+  {
+    path: '/homework-15',
+    element: renderHM15
   }
 ];
 
