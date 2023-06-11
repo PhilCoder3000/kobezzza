@@ -1,20 +1,21 @@
 export function filter(
-  iter: Iterator<number>,
+  iter: Iterable<number>,
   predicate: (value: number) => boolean,
 ): IterableIterator<number> {
+  const innerIter = iter[Symbol.iterator]();
   return {
     [Symbol.iterator]() {
       return this;
     },
     next: () => {
-      let result = iter.next();
+      let result = innerIter.next();
       
       while (!result.done) {
         if (predicate(result.value)) {
-          return { value: result.value, done: false };
+          return result;
         }
         
-        result = iter.next();
+        result = innerIter.next();
       }
       return {
         value: undefined,
